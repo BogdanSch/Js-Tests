@@ -1,0 +1,9 @@
+.wrapper {
+    overflow: hidden;
+}
+
+img {
+    cursor: pointer;
+    max-width: 20rem;
+    transition: transform 1s ease;
+}

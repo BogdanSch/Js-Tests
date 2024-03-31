@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .field {
+            padding: 10px;
+            border-radius: 10px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            column-gap: 10px;
+            position: relative;
+        }
+
+        .box {
+            width: 50px;
+            height: 50px;
+            background-color: lightblue;
+            font-weight: 700;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="shuffledField" class="card field" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <!-- <div class="box" id="box1" draggable="true" ondragstart="drag(event)">1</div>
+                    <div class="box" id="box2" draggable="true" ondragstart="drag(event)">2</div>
+                    <div class="box" id="box3" draggable="true" ondragstart="drag(event)">3</div>
+                    <div class="box" id="box4" draggable="true" ondragstart="drag(event)">4</div>
+                    <div class="box" id="box5" draggable="true" ondragstart="drag(event)">5</div> -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="targetField" class="card field" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+            <div class="col-md-12 mt-4">
+                <button class="btn btn-outline-primary" id="checkOrderButton" onclick="checkOrder()">Check
+                    Order</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const targetField = document.getElementById("targetField");
+        const shuffledField = document.querySelector("#shuffledField");
+        const checkOrderButton = document.getElementById("checkOrderButton");
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            let data = event.dataTransfer.getData("text");
+            event.target.appendChild(document.getElementById(data));
+        }
+
+        function shuffleArray(array) {
+            array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateBoxes() {
+            const boxesToGenerate = [1, 2, 3, 4, 5];
+            shuffleArray(boxesToGenerate);
+
+            for (let i = 0; i < boxesToGenerate.length; i++) {
+                shuffledField.innerHTML += `<div class="box" id="box${i}" draggable="true" ondragstart="drag(event)">${boxesToGenerate[i]}</div>`
+            }
+        }
+
+        function checkOrder() {
+            const boxes = targetField.querySelectorAll(".box");
+            let order = "";
+
+            for (let i = 0; i < boxes.length; i++) {
+                order += boxes[i].innerText;
+            }
+
+            if (order === "12345") {
+                alert("OK");
+                animateBoxes();
+            } else {
+                alert("Error");
+            }
+        }
+
+        function animateBoxes() {
+            const boxes = targetField.querySelectorAll(".box");
+
+            let offset = 50;
+            boxes.forEach((box) => {
+                animateBox(box, offset);
+                offset += 50;
+            });
+        }
+
+        function animateBox(box, offset) {
+            let position = 0;
+            let id = setInterval(frame, 10);
+
+            function frame() {
+                if (position == offset) {
+                    clearInterval(id);
+                } else {
+                    position++;
+                    box.style.left = position + 'px';
+                }
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            generateBoxes();
+        })
+    </script>
+
+</body>
+
+</html>
